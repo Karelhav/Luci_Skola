@@ -17,32 +17,68 @@
     padding: 16px 18px; margin-bottom: 10px; color: #2f6fdd; text-decoration: none; font-weight: 600;
   }
   a.test span { display: block; color: #6b6b6b; font-weight: 400; font-size: .9rem; }
+  .badge {
+    display: inline-block; background: #e8572a; color: #fff; font-size: .75rem; font-weight: 700;
+    border-radius: 999px; padding: 2px 10px; margin-left: 8px; vertical-align: middle;
+  }
+  #latest { display: none; background: #fff6d6; border: 2px solid #f2c94c; border-radius: 16px; padding: 12px 14px 4px; margin-bottom: 8px; }
+  #latest h2 { margin: 0 0 8px; color: #8a6d00; }
 </style>
 </head>
 <body>
 <main>
   <h1>Lucčiny testy</h1>
 
-  <!-- Add new tests here: one link per test, newest at the top of its subject. -->
+  <section id="latest">
+    <h2>Naposledy přidáno</h2>
+  </section>
+
+  <!-- Add new tests here: one link per test, newest at the top of its subject.
+       Always set data-added="YYYY-MM-DD" (the day the test was added).
+       Tests added in the last 7 days get a "Nový" badge; the newest one is also shown at the top. -->
   <h2>Vlastivěda</h2>
-  <a class="test" href="vlastiveda-22-23.html">
+  <a class="test" href="vlastiveda-22-23.html" data-added="2026-11-17">
     Vlastivěda – str. 22–23
     <span>manufaktury, parní stroj, čeští vynálezci, železnice · 36 bodů</span>
   </a>
-  <a class="test" href="vlastiveda-17-22-tezsi.html">
+  <a class="test" href="vlastiveda-17-22-tezsi.html" data-added="2026-11-16">
     Vlastivěda – str. 17–22 (těžší verze)
     <span>psaní odpovědí, více správných, řazení · 48 bodů</span>
   </a>
-  <a class="test" href="vlastiveda-17-22.html">
+  <a class="test" href="vlastiveda-17-22.html" data-added="2026-11-16">
     Vlastivěda – str. 17–22
     <span>osvícenství, Marie Terezie, Josef II., život na vesnici, manufaktury · 43 bodů</span>
   </a>
 
   <h2>Matematika</h2>
-  <a class="test" href="prevody-jednotek-1.html">
+  <a class="test" href="prevody-jednotek-1.html" data-added="2026-11-14">
     Převody jednotek – test 1
     <span>délka, litry a mililitry, čas · 43 bodů</span>
   </a>
 </main>
+<script>
+  // Marks recently added tests and shows the newest one at the top of the page.
+  (function () {
+    var NEW_DAYS = 7;
+    var links = Array.prototype.slice.call(document.querySelectorAll('a.test[data-added]'));
+    if (!links.length) return;
+    var now = new Date();
+    links.forEach(function (a) {
+      var ageDays = (now - new Date(a.dataset.added + 'T00:00:00')) / 86400000;
+      if (ageDays <= NEW_DAYS) {
+        var badge = document.createElement('b');
+        badge.className = 'badge';
+        badge.textContent = 'Nový';
+        a.insertBefore(badge, a.querySelector('span'));
+      }
+    });
+    var newest = links.reduce(function (best, a) {
+      return a.dataset.added > best.dataset.added ? a : best;
+    });
+    var box = document.getElementById('latest');
+    box.appendChild(newest.cloneNode(true));
+    box.style.display = 'block';
+  })();
+</script>
 </body>
 </html>
